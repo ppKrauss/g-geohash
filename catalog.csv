@@ -1,0 +1,10 @@
+label,DGG-ref,base,base_alphabet,url-ref-javascript,url-ref-other
+geohash-base32ghs,Geohash,32,ghs,https://github.com/chrisveness/latlon-geohash,
+geohash-base32rfc,Geohash,32,rfc,?,
+geohash-base32pt,Geohash,32,pt,?,
+s2-base16,S2geom,16,iso,https://git.coolaj86.com/coolaj86/s2-geometry.js,
+s2-base32,S2geom,32,js,?,
+s2-base4,S2geom,4,iso,?,
+olc-base20olc,OLC,20,olc,?,
+geohash-hilbert-base16,Geohash?,16,js,?,https://github.com/tammoippen/geohash-hilbert
+geohash-base4,Geohash,4,js,https://github.com/rangle/geohash4,
