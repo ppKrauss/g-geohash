@@ -23,21 +23,24 @@
 	></script>
   <script src="http://lab.digital-democracy.org/leaflet-bing-layer/leaflet-bing-layer.js"></script>
 
-	<script src="./lib_Geocode.js"></script>
-	<script src="./libDggCell_Geohash.js"></script>
-	<script src="./lib_domPage.js"></script>
+	<script src="./assets/lib_Geocode.js"></script>
+	<script src="./assets/libDggCell_Geohash.js"></script>
+	<script src="./assets/domPage.js"></script>
 
 <script>
+
+var selectedByUrl = '';
+
 $(document).ready(function() {  //  ONLOAD
 
     
 	Geocode.cf_hash_baseAlphabetLabel='js';
+	Geocode.cf_digSepRegex = /([^\+\-\.,;]{5})/g;
 	Geocode.kx_hash_baseAlphabet = '0123'; // base4
 	Geocode.kx_hash_base = Geocode.kx_hash_baseAlphabet.length;	//4
 	Geocode.kx_hash_baseAlphabet_case = false;
 	Geocode.kx_hash_baseBits = 2;
 	Geocode.kx_halfLevel_isValid = true;
-	Geocode.digSepRegex = /([^\+\-\.,;]{5})/g;
 
 
 		Geocode.dggCell = DGGcell; // inicializa.
@@ -81,55 +84,35 @@ $(document).ready(function() {  //  ONLOAD
 			Geocode.cf_hash_sep = $(this).is(':checked')?  '.':  ''; // for next
 			$('#dom_geocode').val(
 				Geocode.hashRender( $('#dom_geocode').val(), true )
-			); // for current
+			);
 		});
 
-
-
-// // // //
-// revisar no final...
-		var r = getFromUrl();  // [geocode,city]
-		if (r[0]) { // draw the point requested by url.
-			Geocode.setByHash_whenIsValid(r[0]);
-			$('#dom_geocode').val( Geocode.hash );
-			//old var latlon_array = setRefPoint_byGeocode(Geocode.hash);
-			// old setRefPoint(latlon_array[0],latlon_array[1],Geocode.hash);
-		}
-		/*  // initialise maps
-		if (qLatlon = getQueryArg('latlon')) {
-			var ll = qLatlon.split(',');
-			$('#lat').val(ll[0]);
-			$('#lon').val(ll[1]);
-			$('#lat').trigger('change');
-		}
-		*/
+		runRequest() // checks URL and run parsed parameters.
 
 }); //ONLOAD
-
-
 </script>
 </head>
-
 
 <body>
 
 <p>Localize com geocódigos!
 	&nbsp;
 	<a target="_blank" href="http://www.openstreetmap.com.br/CLP/site/index_CLPcoord/#comparando-candidatos">Grade selecionada</a>:
-	<b>Geohash com base4 e meios</b>. Clique no mapa ou ...
+	<b>Geohash com base4h</b>. Clique no mapa ou ...
 	&nbsp;
 	<select id="usetec" onchange="if (this.value) window.open(this.value+'.htm','_self',false);">
 	<option value="" selected>-- Selecione outra grade --</option>
 	
 	<option value='geohash-base32ghs'>Geohash padrão (base32ghs)</option>
 	<option value='geohash-base32pt'>Geohash com base32pt</option>
+	<option value='geohash-base16h'>Geohash com base16h</option>
 	<option value='geohash-base4'>Geohash com base4</option>
 	<option value='plusCode'>OLC (grade do PlusCode)</option>
 	</select>
 </p>
 
 <div id="mapid" style="width: 100%; height: 400px;"></div>
-<script src="map.js"></script>
+<script src="assets/map.js"></script>
 
 <p>
 	Zoom <span id="zoom_val">16</span>:
@@ -149,60 +132,60 @@ $(document).ready(function() {  //  ONLOAD
 </p>
 
 <form><!-- remover tag form -->
-	<fieldset><legend>Célula <b>Geohash com base4 e meios</b></legend>
+	<fieldset><legend>Célula <b>Geohash com base4h</b></legend>
 		<label style="white-space:nowrap">Geocódigo:
 			<input type="text" size="29" id="dom_geocode" style="font-weight: bold; color:#008; font-size:135%;"/></label>
-		&nbsp;&nbsp;&nbsp;
+		  (<span id="dom_geocode_digits" style="font-family:monospace;color:#008">0</span><small> dígitos</small>) &nbsp;&nbsp;&nbsp;
 		<label style="white-space:nowrap">Separadores <input type="checkbox" checked="1" id="code_sep"/></label>
 		&nbsp;&nbsp;&nbsp;
 		<label style="white-space:nowrap">Nível hierárquico:
 			<select id="dom_level" class="latlon" style="font-weight: bold; color:#008; font-size:135%;">
 			
-	<option value='2'>2</option>
-	<option value='2.5'>2½</option>
-	<option value='3'>3</option>
-	<option value='3.5'>3½</option>
-	<option value='4'>4</option>
-	<option value='4.5'>4½</option>
-	<option value='5'>5</option>
-	<option value='5.5'>5½</option>
-	<option value='6'>6</option>
-	<option value='6.5'>6½</option>
-	<option value='7'>7</option>
-	<option value='7.5'>7½</option>
-	<option value='8'>8</option>
-	<option value='8.5'>8½</option>
-	<option value='9'>9</option>
-	<option value='9.5'>9½</option>
-	<option value='10'>10</option>
-	<option value='10.5'>10½</option>
-	<option value='11'>11</option>
-	<option value='11.5'>11½</option>
-	<option value='12'>12</option>
-	<option value='12.5'>12½</option>
-	<option value='13'>13</option>
-	<option value='13.5'>13½</option>
-	<option value='14'>14</option>
-	<option value='14.5'>14½</option>
-	<option value='15'>15</option>
-	<option value='15.5'>15½</option>
-	<option value='16'>16</option>
-	<option value='16.5'>16½</option>
-	<option value='17'>17</option>
-	<option value='17.5'>17½</option>
-	<option value='18' selected>18</option>
-	<option value='18.5'>18½</option>
-	<option value='19'>19</option>
-	<option value='19.5'>19½</option>
-	<option value='20'>20</option>
-	<option value='20.5'>20½</option>
-	<option value='21'>21</option>
-	<option value='21.5'>21½</option>
-	<option value='22'>22</option>
-	<option value='22.5'>22½</option>
-	<option value='23'>23</option>
-	<option value='23.5'>23½</option>
-	<option value='24'>24</option>
+	<option value='2'>L2</option>
+	<option value='2.5'>L2½</option>
+	<option value='3'>L3</option>
+	<option value='3.5'>L3½</option>
+	<option value='4'>L4 (~1100km)</option>
+	<option value='4.5'>L4½</option>
+	<option value='5'>L5 (~800km)</option>
+	<option value='5.5'>L5½</option>
+	<option value='6'>L6 (~600km)</option>
+	<option value='6.5'>L6½</option>
+	<option value='7'>L7</option>
+	<option value='7.5'>L7½ (~150km)</option>
+	<option value='8'>L8</option>
+	<option value='8.5'>L8½</option>
+	<option value='9'>L9</option>
+	<option value='9.5'>L9½</option>
+	<option value='10'>L10 (~30km)</option>
+	<option value='10.5'>L10½</option>
+	<option value='11'>L11</option>
+	<option value='11.5'>L11½</option>
+	<option value='12'>L12</option>
+	<option value='12.5'>L12½</option>
+	<option value='13'>L13</option>
+	<option value='13.5'>L13½</option>
+	<option value='14'>L14</option>
+	<option value='14.5'>L14½</option>
+	<option value='15'>L15 (~1km)</option>
+	<option value='15.5'>L15½</option>
+	<option value='16'>L16 (~500m)</option>
+	<option value='16.5'>L16½</option>
+	<option value='17'>L17</option>
+	<option value='17.5'>L17½</option>
+	<option value='18' selected>L18</option>
+	<option value='18.5'>L18½</option>
+	<option value='19'>L19</option>
+	<option value='19.5'>L19½</option>
+	<option value='20'>L20 (~30m)</option>
+	<option value='20.5'>L20½</option>
+	<option value='21'>L21</option>
+	<option value='21.5'>L21½</option>
+	<option value='22'>L22 (~10m)</option>
+	<option value='22.5'>L22½ (~5m)</option>
+	<option value='23'>L23</option>
+	<option value='23.5'>L23½</option>
+	<option value='24'>L24</option>
 			</select></label>
 		<br/>
 		<label>Centro em <span style="white-space:nowrap; font-family:monospace">geo:<input

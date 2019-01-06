@@ -27,8 +27,29 @@ $MENU1 = [
 		Geocode.kx_hash_baseAlphabet = '0123456789BCDFGHJKLMNPQRSTUVWXYZ'; // base32pt, non-silabic (for Portuguese)
     Geocode.kx_hash_baseAlphabet_case = 'upper';
 "],
-"geohash-base4-meios"=>[
-				 "nome"=>'Geohash com base4 e meios',
+"geohash-base16h"=>[
+	"nome"=>'Geohash com base16h',
+	"lib"=>'Geohash',
+	"baseBits"=>4,
+	"halfLevel"=>false,
+	"first_nivel"=>4,
+	"max_nivel"=>25,
+	"nivel_sel"=>20,
+	"nivel_step"=>2,
+	"digits_group"=>4,
+	"js_onload"=>"
+	// gambi, please change to Geocode.config(etc).
+	Geocode.cf_hash_baseAlphabetLabel='js'
+	Geocode.cf_hash_base=16; // cuts base32
+	Geocode.cf_digSepRegex = /([^\+\-\.,;]{4})/g;  // by 4.
+	Geocode.kx_hash_baseAlphabet = '0123456789abcdef';
+	Geocode.kx_hash_baseAlphabet_case = 'lower';
+	Geocode.kx_hash_baseBits = 4; // ln2(base)=ln(base)/ln(2).
+	Geocode.kx_hash_base = Geocode.kx_hash_baseAlphabet.length;	//16
+	Geocode.kx_halfLevel_isValid = true;
+"],
+"geohash-base4h"=>[
+				 "nome"=>'Geohash com base4h',
 				 "halfLevel"=>true,
 				 "baseBits"=>2,
 				 "digits_group"=>5,
@@ -36,12 +57,12 @@ $MENU1 = [
 				 "max_nivel"=>24, "nivel_sel"=>18, "nivel_step"=>0.5,
 				 "js_onload"=>"
 	Geocode.cf_hash_baseAlphabetLabel='js';
+	Geocode.cf_digSepRegex = /([^\+\-\.,;]{5})/g;
 	Geocode.kx_hash_baseAlphabet = '0123'; // base4
 	Geocode.kx_hash_base = Geocode.kx_hash_baseAlphabet.length;	//4
 	Geocode.kx_hash_baseAlphabet_case = false;
 	Geocode.kx_hash_baseBits = 2;
 	Geocode.kx_halfLevel_isValid = true;
-	Geocode.digSepRegex = /([^\+\-\.,;]{5})/g;
 "],
 	"geohash-base4"=>[
            "nome"=>'Geohash com base4',"digits_group"=>5,
@@ -53,7 +74,7 @@ $MENU1 = [
 		Geocode.base = Geocode.base_alphabet.length; //4
     Geocode.base_alphabet_case = '-';
 		Geocode.BitMAX = 2;
-		Geocode.digSepRegex = /([^\+\-\.,;]{5})/g;
+		Geocode.cf_digSepRegex = /([^\+\-\.,;]{5})/g;
 "],
 "plusCode"=>[
 	"nome"=>'OLC (grade do PlusCode)',
@@ -72,6 +93,8 @@ $RUN_ITENS = $RUN_ITEM? [$RUN_ITEM]: array_keys($MENU1);
 
 // // //  MAIN
 
+$jsPath = './assets';
+
 foreach($RUN_ITENS as $MENU1_CURRENT):
 
 $CUR_ITEM = $MENU1[$MENU1_CURRENT];
@@ -79,40 +102,46 @@ $CUR_ITEM = $MENU1[$MENU1_CURRENT];
 $NOME0 = preg_replace('#\([^\)]+\)#', '', $CUR_ITEM['nome']);
 $JSLIB = $CUR_ITEM['lib'];
 if (substr($JSLIB,0,4)!='http')
-	$JSLIB = (substr($JSLIB,0,1)!='.')? "./libDggCell_{$JSLIB}.js": "$JSLIB.js";
+	$JSLIB = (substr($JSLIB,0,1)!='.')? "$jsPath/libDggCell_{$JSLIB}.js": "$JSLIB.js";
 
 $OPTS1='';
-foreach($MENU1 as $val=>$r) if ($val!=$MENU1_CURRENT)
-      $OPTS1.= "\n\t<option value='$val'>{$r['nome']}</option>";
+foreach($MENU1 as $val=>$r) if ($val!=$MENU1_CURRENT) {
+	//file_put_contents('php://stderr', "\n\t(debug) $val");
+	$OPTS1.= "\n\t<option value='$val'>{$r['nome']}</option>";
 
-$xx=($CUR_ITEM['baseBits']<4)? 2 : 5;
-$OPTS2='';
+}
+
+if (isset($CUR_ITEM['first_nivel']))
+  $xx=$CUR_ITEM['first_nivel'];
+else
+	$xx=($CUR_ITEM['baseBits']<4)? 2 : 5;
+
+if ($CUR_ITEM['lib']=='Geohash') $scale = [
+		'4.0'=>'1100km','5.0'=>'800km','6.0'=>'600km','7.5'=>'150km',
+		'10.0'=>'30km','15.0'=>'1km','16.0'=>'500m',
+		'20.0'=>'30m','22.0'=>'10m','22.5'=>'5m', '25.0'=>'1m'
+	];
+else $scale = [];
+
+$OPTS_LEVEL='';
 $HALFLEVEL=isset($CUR_ITEM["halfLevel"])? $CUR_ITEM["halfLevel"] : false;
 $step = $CUR_ITEM['nivel_step']? $CUR_ITEM['nivel_step']: 1;
 for($i=$xx; $i<=$CUR_ITEM['max_nivel']; $i += $step) {
 	$gambi = str_replace(',','.',"$i");
 	$x = floor($i);
   $x = ($x==$i)? $i: "{$x}½";
-	$OPTS2.= "\n\t<option value='$gambi'"
+	$ix = number_format($i,1);
+	$aux = isset($scale[$ix])? " (~$scale[$ix])": '';
+	$OPTS_LEVEL.= "\n\t<option value='$gambi'"
 	      .( ($i==$CUR_ITEM['nivel_sel'])? " selected": "" )
-				.">$x</option>";
+				.">L$x$aux</option>";
 } // i
 
-/* lixo
-for($i=2; $i<=$CUR_ITEM['max_nivel']; $i += 2.5) {
-	$u = $HALFLEVEL? ".0": '';
-	$i2=$i;
-	for($k=0;!$k || ($HALFLEVEL && $k<2); $k++){
-		$x = $HALFLEVEL? "nível $i2": "$i2 dígitos";
-		$OPTS2.= "\n\t<option value='$i$u'"
-		      .( ($i==$CUR_ITEM['nivel_sel'])? " selected": "" )
-					.">$x</option>";
-		$u=".5"; $i2="{$i}½";
-	} // k
-} // i
-*/
 
 $CODE_SIZE = round(5+ $CUR_ITEM['max_nivel']*2/$CUR_ITEM['baseBits']);
+
+file_put_contents('php://stderr', "\n\t... processing $MENU1_CURRENT");
+
 
 // // // // //
 $TPL = <<<HTML
@@ -141,11 +170,14 @@ $TPL = <<<HTML
 	></script>
   <script src="http://lab.digital-democracy.org/leaflet-bing-layer/leaflet-bing-layer.js"></script>
 
-	<script src="./lib_Geocode.js"></script>
+	<script src="{$jsPath}/lib_Geocode.js"></script>
 	<script src="{$JSLIB}"></script>
-	<script src="./lib_domPage.js"></script>
+	<script src="{$jsPath}/domPage.js"></script>
 
 <script>
+
+var selectedByUrl = '';
+
 $(document).ready(function() {  //  ONLOAD
 
     {$CUR_ITEM['js_onload']}
@@ -191,35 +223,14 @@ $(document).ready(function() {  //  ONLOAD
 			Geocode.cf_hash_sep = $(this).is(':checked')?  '.':  ''; // for next
 			$('#dom_geocode').val(
 				Geocode.hashRender( $('#dom_geocode').val(), true )
-			); // for current
+			);
 		});
 
-
-
-// // // //
-// revisar no final...
-		var r = getFromUrl();  // [geocode,city]
-		if (r[0]) { // draw the point requested by url.
-			Geocode.setByHash_whenIsValid(r[0]);
-			$('#dom_geocode').val( Geocode.hash );
-			//old var latlon_array = setRefPoint_byGeocode(Geocode.hash);
-			// old setRefPoint(latlon_array[0],latlon_array[1],Geocode.hash);
-		}
-		/*  // initialise maps
-		if (qLatlon = getQueryArg('latlon')) {
-			var ll = qLatlon.split(',');
-			$('#lat').val(ll[0]);
-			$('#lon').val(ll[1]);
-			$('#lat').trigger('change');
-		}
-		*/
+		runRequest() // checks URL and run parsed parameters.
 
 }); //ONLOAD
-
-
 </script>
 </head>
-
 
 <body>
 
@@ -235,7 +246,7 @@ $(document).ready(function() {  //  ONLOAD
 </p>
 
 <div id="mapid" style="width: 100%; height: 400px;"></div>
-<script src="map.js"></script>
+<script src="assets/map.js"></script>
 
 <p>
 	Zoom <span id="zoom_val">16</span>:
@@ -258,12 +269,12 @@ $(document).ready(function() {  //  ONLOAD
 	<fieldset><legend>Célula <b>{$NOME0}</b></legend>
 		<label style="white-space:nowrap">Geocódigo:
 			<input type="text" size="{$CODE_SIZE}" id="dom_geocode" style="font-weight: bold; color:#008; font-size:135%;"/></label>
-		&nbsp;&nbsp;&nbsp;
+		  (<span id="dom_geocode_digits" style="font-family:monospace;color:#008">0</span><small> dígitos</small>) &nbsp;&nbsp;&nbsp;
 		<label style="white-space:nowrap">Separadores <input type="checkbox" checked="1" id="code_sep"/></label>
 		&nbsp;&nbsp;&nbsp;
 		<label style="white-space:nowrap">Nível hierárquico:
 			<select id="dom_level" class="latlon" style="font-weight: bold; color:#008; font-size:135%;">
-			{$OPTS2}
+			{$OPTS_LEVEL}
 			</select></label>
 		<br/>
 		<label>Centro em <span style="white-space:nowrap; font-family:monospace">geo:<input
@@ -302,6 +313,10 @@ $(document).ready(function() {  //  ONLOAD
 </html>
 HTML;
 
-file_put_contents("../site/{$MENU1_CURRENT}.htm",$TPL);
+$f= realpath( dirname(__FILE__)."/../site/{$MENU1_CURRENT}.htm" );
+file_put_contents($f,$TPL);
+file_put_contents('php://stderr', "\n Saved $f");
 
 endforeach; // $RUN_ITENS
+
+file_put_contents('php://stderr', "\n");

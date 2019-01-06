@@ -7,21 +7,21 @@
 var Geocode = {
   // CONFIGS:
   cf_name:'Geohash padrão (base32ghs)'  //  commom.
-  ,cf_hash_sep: '.' // standard is empty. Usual '.'
   ,cf_latLng_ZERO: 0.000001  // for precision when no level defined.
   ,cf_hash_baseAlphabetLabel: 'ghs'
   ,cf_halfDigit_0: '⬒' // top_black=0 or 1
   ,cf_halfDigit_2: '⬓' // down_black=2 or 3
+  ,cf_hash_sep: '.' // standard is empty. Usual '.'
+  ,cf_digSepRegex: /([^\+\-\.,;]{3})/g  // f(alphabet,cf_hash_sep) usual or any other, for clean hash.
 
   // CACHED-CONFIGS: obtained by method this.config() constructor
   ,kx_hash_baseAlphabet_case: 'lower'
-  ,digSepRegex: /([^\+\-\.,;]{3})/g  // usual or any other, for clean hash.
-  ,kx_hash_baseAlphabet: '0123456789bcdefghjkmnpqrstuvwxyz' // base32ghs, standard Geohash alphabet
+  ,kx_hash_baseAlphabet: '0123456789bcdefghjkmnpqrstuvwxyz' // f(cf_hash_baseAlphabetLabel)
   ,kx_hash_base: 32 // suffix only! be not confusion with this.dggCell.base of this.dggCell.id
   ,kx_hash_baseBits:5  // factor to length fill zeros, bits/2
-  ,kx_halfDigit_Detect: /[⬓⬒]$/
+  ,kx_halfDigit_Detect: /[⬓⬒]$/  // f(cf_halfDigit_0,cf_halfDigit_2)
   ,kx_halfLevel_isValid: true // indica se permitido ou não na precisão.
-  ,kx_latLng_ZERO_digits: 6
+  ,kx_latLng_ZERO_digits: 6  // f(cf_latLng_ZERO)
   // STATES:  see cleanStates() method.
 
   // PLUGS:
@@ -41,7 +41,7 @@ var Geocode = {
  * @param level float, a valid non-zero multiple of 2.5, as hierarchical level of DGGcell.
  */
 Geocode.set = function(lngLat, level) {
-  var chkByBase = {"4":[1,0.5],"32":[5,2.5]}; // mod detector for [exact,halfLevel]
+  var chkByBase = {"4":[1,0.5],"32":[5,2.5],"16":[1,0.5]}; // mod detector for [exact,halfLevel]
   var ckb = chkByBase[this.kx_hash_base]; // get level profile for this base
   if (!ckb) alert("BUG99");
   if (!lngLat || !level || !(typeof lngLat=='array' || lngLat instanceof Array) || lngLat[0]===undefined || lngLat[0]===null) {
@@ -232,7 +232,7 @@ Geocode.hashRender = function (s,startSantizing=true) {
   if (s===undefined || !s) {s=this.hash; changeState=true;}
   if (startSantizing) s = this.hlp_hashSantize(s); // important default behaviour for external input.
   if (this.cf_hash_sep) {
-    s = s.replace(Geocode.digSepRegex, '$1'+this.cf_hash_sep)
+    s = s.replace(Geocode.cf_digSepRegex, '$1'+this.cf_hash_sep)
   	if (s.charAt(s.length-1)==this.cf_hash_sep)
   	  s = s.substr(0, s.length-1);
   }
@@ -249,7 +249,7 @@ Geocode.hashRender = function (s,startSantizing=true) {
 // functions with "hlp_" prefix: they MUST not to use neither affects Geocode.props!
 
 Geocode.BaseNamedAlphabets = { // for Geocode.config and hlp_*convertBase.
-  'js':   '0123456789abcdefghijklmnopqrstuv' // standard Javascript (ECMA-262)
+  'js':   '0123456789abcdefghijklmnopqrstuv' // standard ISO or Javascript (ECMA-262)
   ,'ghs': '0123456789bcdefghjkmnpqrstuvwxyz' // standard Geohash (js except "ailo")
   ,'pt':  '0123456789BCDFGHJKLMNPQRSTUVWXYZ' // no frequent vowel of Portuguese (for non-silabic codes)
   ,'rfc': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567' // RFC3548
@@ -448,7 +448,7 @@ Geocode.hlp_parseLngLat = function (lon,lat=null,dmsApply=true,asStr=false) {
   if (typeof lon=='array' || lon instanceof Array)
     [lon,lat] = lon;
   if (lat===null && typeof lon =='string')
-		[lat,lon] = lon.trim().split(','); // parsing geoURI value
+		[lat,lon] = lon.trim().replace(/[\/;:]+/,',').split(','); // parsing geoURI value  old .
   var ll = [lon,lat];
 	if (dmsApply)
 	  ll = [ Geocode.parseDMS(ll[0],asStr), Geocode.parseDMS(ll[1],asStr) ];

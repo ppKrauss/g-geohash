@@ -34,11 +34,15 @@ var selectedByUrl = '';
 $(document).ready(function() {  //  ONLOAD
 
     
-		Geocode.base_alphabet = '0123'; // base4
-		Geocode.base = Geocode.base_alphabet.length; //4
-    Geocode.base_alphabet_case = '-';
-		Geocode.BitMAX = 2;
-		Geocode.cf_digSepRegex = /([^\+\-\.,;]{5})/g;
+	// gambi, please change to Geocode.config(etc).
+	Geocode.cf_hash_baseAlphabetLabel='js'
+	Geocode.cf_hash_base=16; // cuts base32
+	Geocode.cf_digSepRegex = /([^\+\-\.,;]{4})/g;  // by 4.
+	Geocode.kx_hash_baseAlphabet = '0123456789abcdef';
+	Geocode.kx_hash_baseAlphabet_case = 'lower';
+	Geocode.kx_hash_baseBits = 4; // ln2(base)=ln(base)/ln(2).
+	Geocode.kx_hash_base = Geocode.kx_hash_baseAlphabet.length;	//16
+	Geocode.kx_halfLevel_isValid = true;
 
 
 		Geocode.dggCell = DGGcell; // inicializa.
@@ -96,15 +100,15 @@ $(document).ready(function() {  //  ONLOAD
 <p>Localize com geocódigos!
 	&nbsp;
 	<a target="_blank" href="http://www.openstreetmap.com.br/CLP/site/index_CLPcoord/#comparando-candidatos">Grade selecionada</a>:
-	<b>Geohash com base4</b>. Clique no mapa ou ...
+	<b>Geohash com base16h</b>. Clique no mapa ou ...
 	&nbsp;
 	<select id="usetec" onchange="if (this.value) window.open(this.value+'.htm','_self',false);">
 	<option value="" selected>-- Selecione outra grade --</option>
 	
 	<option value='geohash-base32ghs'>Geohash padrão (base32ghs)</option>
 	<option value='geohash-base32pt'>Geohash com base32pt</option>
-	<option value='geohash-base16h'>Geohash com base16h</option>
 	<option value='geohash-base4h'>Geohash com base4h</option>
+	<option value='geohash-base4'>Geohash com base4</option>
 	<option value='plusCode'>OLC (grade do PlusCode)</option>
 	</select>
 </p>
@@ -130,37 +134,25 @@ $(document).ready(function() {  //  ONLOAD
 </p>
 
 <form><!-- remover tag form -->
-	<fieldset><legend>Célula <b>Geohash com base4</b></legend>
+	<fieldset><legend>Célula <b>Geohash com base16h</b></legend>
 		<label style="white-space:nowrap">Geocódigo:
-			<input type="text" size="29" id="dom_geocode" style="font-weight: bold; color:#008; font-size:135%;"/></label>
+			<input type="text" size="18" id="dom_geocode" style="font-weight: bold; color:#008; font-size:135%;"/></label>
 		  (<span id="dom_geocode_digits" style="font-family:monospace;color:#008">0</span><small> dígitos</small>) &nbsp;&nbsp;&nbsp;
 		<label style="white-space:nowrap">Separadores <input type="checkbox" checked="1" id="code_sep"/></label>
 		&nbsp;&nbsp;&nbsp;
 		<label style="white-space:nowrap">Nível hierárquico:
 			<select id="dom_level" class="latlon" style="font-weight: bold; color:#008; font-size:135%;">
 			
-	<option value='2'>L2</option>
-	<option value='3'>L3</option>
 	<option value='4'>L4 (~1100km)</option>
-	<option value='5'>L5 (~800km)</option>
 	<option value='6'>L6 (~600km)</option>
-	<option value='7'>L7</option>
 	<option value='8'>L8</option>
-	<option value='9'>L9</option>
 	<option value='10'>L10 (~30km)</option>
-	<option value='11'>L11</option>
 	<option value='12'>L12</option>
-	<option value='13'>L13</option>
 	<option value='14'>L14</option>
-	<option value='15'>L15 (~1km)</option>
 	<option value='16'>L16 (~500m)</option>
-	<option value='17'>L17</option>
 	<option value='18'>L18</option>
-	<option value='19'>L19</option>
 	<option value='20' selected>L20 (~30m)</option>
-	<option value='21'>L21</option>
 	<option value='22'>L22 (~10m)</option>
-	<option value='23'>L23</option>
 	<option value='24'>L24</option>
 			</select></label>
 		<br/>

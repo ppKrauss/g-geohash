@@ -2,17 +2,6 @@
  * LeafletJs map initializations.
  */
 
-var selectedByUrl = '';
-
-function getFromUrl() {
-  var UrlHash = window.location.hash
-      , geocode = ''
-      , city    = '';
-  UrlHash = UrlHash.replace('#',''); // e.g. #6gzm/sp-mtl , #6gycf/sp-spa or #6gkz/pr-cur
-  if (UrlHash) geocode = UrlHash;
-  return [geocode,city];
-} // \func
-
 // // // //
 const BING_KEY = 'AuhiCJHlGzhg93IqUH_oCpl_-ZUrIE6SPftlyGYUvr9Amx5nzA-WqGcPquyFZl4L'
    ,MAPBOX_KEY = 'eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw'

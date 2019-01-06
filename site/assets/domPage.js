@@ -81,6 +81,8 @@ function setRefPoint(lat, lon) {
 		else
 			$('#dom_base4').text(Geocode.hash_base4h);
 		$('#dom_geocode').val(showHash);
+		$('#dom_geocode_digits').html(Geocode.hash.length);
+
 		mapCanvas_popup(Geocode.center, showHash);
 		return Geocode.hash;
 	} else return null;
@@ -99,6 +101,48 @@ function onMapMouseMove(e) {  // used by map.js
 		e.latlng.lat.toFixed(6) + "," + e.latlng.lng.toFixed(6)
 	)
 }
+
+
+// // // // // //
+
+function getFromUrl() {  // parse URL, get parameters
+  var UrlRequest = window.location.hash;
+	var ret=null;
+	// e.g. #6gzm/sp-mtl , #6gycf/sp-spa or #6gkz/pr-cur
+	if ( m = UrlRequest.match(/^#geo:(\-?\d+\.\d+,\-?\d+\.\d+)$/) )
+		ret = {geo:m[1]};
+  else if ( m = UrlRequest.match(/^#([a-z0-9\+ ]+)[\/\-:;]+(.+)$/) )
+		ret = {geocode:m[1],city:m[2]};
+	else if ( m = UrlRequest.match(/^#([A-Z][a-z0-9A-Z\-\.\+ ]+)[\/\-:;]+([a-z0-9]+)$/) )
+		ret = {geocode:m[2],city:m[1]};
+	return ret;
+} // \func
+
+function runRequest() {
+	var c = null,
+	    r = getFromUrl();
+	if (r) { // check URL params
+		var used=false;
+		if ( r.geocode && (c = Geocode.setByHash_whenIsValid(r.geocode)) ) {
+			$('#dom_geocode').val(c.hash)
+			$('#dom_level').val(c.level)
+			setRefPoint(c.center);
+			used=true;
+		} else if (r.geo) {
+			$('#dom_level').val(15); // 1km
+			var c = Geocode.hlp_parseLatLon(r.geo);
+			setRefPoint(c);
+			used=true;
+		}
+		if (r.city) {
+			console.log("debug1 city ok:",r)
+			used=true;
+		}
+		if (!used)
+			console.log("interface ERROR: invalid geocode at URL")
+	}
+} // \func
+
 
 ////
 

@@ -23,11 +23,14 @@
 	></script>
   <script src="http://lab.digital-democracy.org/leaflet-bing-layer/leaflet-bing-layer.js"></script>
 
-	<script src="./lib_Geocode.js"></script>
-	<script src="./libDggCell_Geohash.js"></script>
-	<script src="./lib_domPage.js"></script>
+	<script src="./assets/lib_Geocode.js"></script>
+	<script src="./assets/libDggCell_Geohash.js"></script>
+	<script src="./assets/domPage.js"></script>
 
 <script>
+
+var selectedByUrl = '';
+
 $(document).ready(function() {  //  ONLOAD
 
     
@@ -77,35 +80,14 @@ $(document).ready(function() {  //  ONLOAD
 			Geocode.cf_hash_sep = $(this).is(':checked')?  '.':  ''; // for next
 			$('#dom_geocode').val(
 				Geocode.hashRender( $('#dom_geocode').val(), true )
-			); // for current
+			);
 		});
 
-
-
-// // // //
-// revisar no final...
-		var r = getFromUrl();  // [geocode,city]
-		if (r[0]) { // draw the point requested by url.
-			Geocode.setByHash_whenIsValid(r[0]);
-			$('#dom_geocode').val( Geocode.hash );
-			//old var latlon_array = setRefPoint_byGeocode(Geocode.hash);
-			// old setRefPoint(latlon_array[0],latlon_array[1],Geocode.hash);
-		}
-		/*  // initialise maps
-		if (qLatlon = getQueryArg('latlon')) {
-			var ll = qLatlon.split(',');
-			$('#lat').val(ll[0]);
-			$('#lon').val(ll[1]);
-			$('#lat').trigger('change');
-		}
-		*/
+		runRequest() // checks URL and run parsed parameters.
 
 }); //ONLOAD
-
-
 </script>
 </head>
-
 
 <body>
 
@@ -118,14 +100,15 @@ $(document).ready(function() {  //  ONLOAD
 	<option value="" selected>-- Selecione outra grade --</option>
 	
 	<option value='geohash-base32ghs'>Geohash padrão (base32ghs)</option>
-	<option value='geohash-base4-meios'>Geohash com base4 e meios</option>
+	<option value='geohash-base16h'>Geohash com base16h</option>
+	<option value='geohash-base4h'>Geohash com base4h</option>
 	<option value='geohash-base4'>Geohash com base4</option>
 	<option value='plusCode'>OLC (grade do PlusCode)</option>
 	</select>
 </p>
 
 <div id="mapid" style="width: 100%; height: 400px;"></div>
-<script src="map.js"></script>
+<script src="assets/map.js"></script>
 
 <p>
 	Zoom <span id="zoom_val">16</span>:
@@ -148,21 +131,21 @@ $(document).ready(function() {  //  ONLOAD
 	<fieldset><legend>Célula <b>Geohash com base32pt</b></legend>
 		<label style="white-space:nowrap">Geocódigo:
 			<input type="text" size="15" id="dom_geocode" style="font-weight: bold; color:#008; font-size:135%;"/></label>
-		&nbsp;&nbsp;&nbsp;
+		  (<span id="dom_geocode_digits" style="font-family:monospace;color:#008">0</span><small> dígitos</small>) &nbsp;&nbsp;&nbsp;
 		<label style="white-space:nowrap">Separadores <input type="checkbox" checked="1" id="code_sep"/></label>
 		&nbsp;&nbsp;&nbsp;
 		<label style="white-space:nowrap">Nível hierárquico:
 			<select id="dom_level" class="latlon" style="font-weight: bold; color:#008; font-size:135%;">
 			
-	<option value='5'>5</option>
-	<option value='7.5'>7½</option>
-	<option value='10'>10</option>
-	<option value='12.5'>12½</option>
-	<option value='15'>15</option>
-	<option value='17.5'>17½</option>
-	<option value='20' selected>20</option>
-	<option value='22.5'>22½</option>
-	<option value='25'>25</option>
+	<option value='5'>L5 (~800km)</option>
+	<option value='7.5'>L7½ (~150km)</option>
+	<option value='10'>L10 (~30km)</option>
+	<option value='12.5'>L12½</option>
+	<option value='15'>L15 (~1km)</option>
+	<option value='17.5'>L17½</option>
+	<option value='20' selected>L20 (~30m)</option>
+	<option value='22.5'>L22½ (~5m)</option>
+	<option value='25'>L25 (~1m)</option>
 			</select></label>
 		<br/>
 		<label>Centro em <span style="white-space:nowrap; font-family:monospace">geo:<input
