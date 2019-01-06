@@ -27,8 +27,8 @@ $MENU1 = [
 		Geocode.kx_hash_baseAlphabet = '0123456789BCDFGHJKLMNPQRSTUVWXYZ'; // base32pt, non-silabic (for Portuguese)
     Geocode.kx_hash_baseAlphabet_case = 'upper';
 "],
-"geohash-base16h"=>[
-	"nome"=>'Geohash com base16h',
+"geohash-base16"=>[
+	"nome"=>'Geohash com base16',
 	"lib"=>'Geohash',
 	"baseBits"=>4,
 	"halfLevel"=>false,
@@ -63,7 +63,8 @@ $MENU1 = [
 	Geocode.kx_hash_baseAlphabet_case = false;
 	Geocode.kx_hash_baseBits = 2;
 	Geocode.kx_halfLevel_isValid = true;
-"],
+"]
+/*
 	"geohash-base4"=>[
            "nome"=>'Geohash com base4',"digits_group"=>5,
 					 "lib"=>'Geohash',
@@ -76,6 +77,7 @@ $MENU1 = [
 		Geocode.BitMAX = 2;
 		Geocode.cf_digSepRegex = /([^\+\-\.,;]{5})/g;
 "],
+
 "plusCode"=>[
 	"nome"=>'OLC (grade do PlusCode)',
 	"baseBits"=>5,
@@ -86,6 +88,7 @@ $MENU1 = [
 	"digits_group"=>3,
 	"js_onload"=>''
 ],
+*/
 ];
 $RUN_ITEM = ($argc>1)? $argv[1]: '';
 if ($RUN_ITEM && !isset($MENU1[$RUN_ITEM])) die("\nERRO, item '$argv[1]' desconhecido. \n");
@@ -131,7 +134,7 @@ for($i=$xx; $i<=$CUR_ITEM['max_nivel']; $i += $step) {
 	$x = floor($i);
   $x = ($x==$i)? $i: "{$x}½";
 	$ix = number_format($i,1);
-	$aux = isset($scale[$ix])? " (~$scale[$ix])": '';
+	$aux = isset($scale[$ix])? " &nbsp;&nbsp; (~$scale[$ix])": '';
 	$OPTS_LEVEL.= "\n\t<option value='$gambi'"
 	      .( ($i==$CUR_ITEM['nivel_sel'])? " selected": "" )
 				.">L$x$aux</option>";
@@ -313,8 +316,9 @@ $(document).ready(function() {  //  ONLOAD
 </html>
 HTML;
 
-$f= realpath( dirname(__FILE__)."/../site/{$MENU1_CURRENT}.htm" );
+$f= dirname(__FILE__)."/../site/{$MENU1_CURRENT}.htm";
 file_put_contents($f,$TPL);
+$f=realpath($f);
 file_put_contents('php://stderr', "\n Saved $f");
 
 endforeach; // $RUN_ITENS
