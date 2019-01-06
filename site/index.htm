@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>CLP-options Viewer</title>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"/>
+
+</head>
+<body>
+<h2>CLP viewer</h2>
+<!-- http://www.openstreetmap.com.br/CLP/site3/  -->
+
+<p>Complemento do <a href="http://www.openstreetmap.com.br/CLP/site/">Projeto CLP</a>
+	para a visualização dos geocódigos avaliados (opções tecnológicas e suas variantes).</p>
+
+<p>
+Localize-se e obtenha seus geocódigos!
+&nbsp;
+	<select id="usetec" onchange="if (this.value) window.open(this.value+'.htm','_self',false);">
+	<option value="" selected>-- Selecione o padrão desejado --</option>
+	
+        <option value='geohash-base32ghs'>Geohash padrão (base32ghs)</option>
+	<option value='geohash-base32pt'>Geohash com base32pt</option>
+	<option value='geohash-base4-meios'>Geohash com base4 e meios</option>
+	<option value='geohash-base4'>Geohash com base4</option>
+	</select>
+</p>
+
+</body>
+</html>
