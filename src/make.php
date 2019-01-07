@@ -122,7 +122,7 @@ else
 if ($CUR_ITEM['lib']=='Geohash') $scale = [
 		'4.0'=>'1100km','5.0'=>'800km','6.0'=>'600km','7.5'=>'150km',
 		'10.0'=>'30km','15.0'=>'1km','16.0'=>'500m',
-		'20.0'=>'30m','22.0'=>'10m','22.5'=>'5m', '25.0'=>'1m'
+		'20.0'=>'25m','22.0'=>'10m','22.5'=>'5m', '25.0'=>'1m'
 	];
 else $scale = [];
 
@@ -180,6 +180,7 @@ $TPL = <<<HTML
 <script>
 
 var selectedByUrl = '';
+var COVER={};
 
 $(document).ready(function() {  //  ONLOAD
 
@@ -248,9 +249,9 @@ $(document).ready(function() {  //  ONLOAD
 	</select>
 </p>
 
+<!-- MAPA E SEUS CONTROLES: -->
 <div id="mapid" style="width: 100%; height: 400px;"></div>
 <script src="assets/map.js"></script>
-
 <p>
 	Zoom <span id="zoom_val">16</span>:
 	&nbsp; &nbsp;
@@ -268,7 +269,7 @@ $(document).ready(function() {  //  ONLOAD
 	      style="white-space:nowrap;font-family:monospace">geo:<span id="showMouseMove">?</span></span>
 </p>
 
-<form><!-- remover tag form -->
+<!-- CÉLULA: -->
 	<fieldset><legend>Célula <b>{$NOME0}</b></legend>
 		<label style="white-space:nowrap">Geocódigo:
 			<input type="text" size="{$CODE_SIZE}" id="dom_geocode" style="font-weight: bold; color:#008; font-size:135%;"/></label>
@@ -287,30 +288,39 @@ $(document).ready(function() {  //  ONLOAD
 		&nbsp;&nbsp;&nbsp;
 		<label id="showBase4" style="white-space:nowrap;">Base4:
 			<span id="dom_base4" style="font-family:monospace;color:#888"></span></label>
+			&nbsp;&nbsp;&nbsp;<b>CLP: <span style="color:red" id="cell_etc"></span></b>
 	</fieldset>
 
-<!-- outr fieldset -->
+<!-- CIDADES -->
 
 	<div id="city-ALL">
+<!-- ["6gwx","6gwz","6gy8","6gy9","6gyb","6gyc","6gyd","6gyf","6gyg","6gz1","6gz4"] -->
 		<p class="city-LST">Cidade com bordas apresentadas em vermelho:
 		&nbsp;<a href="javascript:void(0);" onclick="cityCanvas.show('sp-spa','city')" id="city-sp-spa">São Paulo (SP)</a>,
 		<!-- mostrar amarelo claro ... Cover-set Geohash de "sp-spa"  = ['6gwx','6gwz', '6gy8','6gy9','6gyb','6gyc','6gyd','6gyf','6gyg',  '6gz1','6gz4'] -->
 		&nbsp;<a href="javascript:void(0);" onclick="cityCanvas.show('pr-cur','city')" id="city-pr-cur">Curitiba (PR)</a>.
+		<br/>
+
 		</p>
 		<p class="city-PTS">Pontos de controle na cidade selecionada: <span>(clique em cidade)</span>
 			<span id="city-PTS-sp-spa" style="display:none">
 		   <a href="javascript:void(0);" onclick="setRefPoint(-23.561618,-46.655996);">MASP</a>,
 		   <a href="javascript:void(0);" onclick="setRefPoint(-23.550375,-46.633937);">Marco-zero-SP</a>, ...
+			 <br/>Cobertura:
+			 <textarea rows="2" cols="64">:b32,6gwx,6gwz,6gy8,6gy9,6gyb,6gyc,6gyd,6gyf,6gyg,6gz1,6gz4</textarea>
 		  </span>
 			<span id="city-PTS-pr-cur" style="display:none">
 		   <a href="javascript:void(0);" onclick="setRefPoint(-25.48656,-49.2744);">ponto-lixo1</a>,
 		   <a href="javascript:void(0);" onclick="setRefPoint(-25.63145,-49.3595);">ponto-lixo2</a>, ...
+			 <br/>Cobertura:
+			 <textarea rows="2" cols="64">:b32,6gkzv, 6gkzy, 6gkzz, 6gmp8, 6gkzx, 6gkzw, 6gkzt, 6gkzs, 6gkzk, 6gkzm, 6gkzq, 6gkzr, 6gmp2, 6gmp0, 6gkzp, 6gkzn, 6gkzj, 6gkzh, 6gkyu, 6gkyv, 6gkyy, 6gkyz, 6gmn, 6gkyx, 6gkyw, 6gkyt, 6gkyk, 6gkym, 6gkyq, 6gkyr, 6gkyh, 6gkyj</textarea>
 		  </span>
 		</p>
 </div>
-
-</form>
-
+<p>Bloco de notas:<br/>
+<textarea id="dom_notes" rows="3" cols="64">
+</textarea>
+</p>
 
 </body>
 </html>

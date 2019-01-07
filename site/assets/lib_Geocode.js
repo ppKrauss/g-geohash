@@ -19,7 +19,7 @@ var Geocode = {
   ,kx_hash_baseAlphabet: '0123456789bcdefghjkmnpqrstuvwxyz' // f(cf_hash_baseAlphabetLabel)
   ,kx_hash_base: 32 // suffix only! be not confusion with this.dggCell.base of this.dggCell.id
   ,kx_hash_baseBits:5  // factor to length fill zeros, bits/2
-  ,kx_halfDigit_Detect: /[⬓⬒]$/  // f(cf_halfDigit_0,cf_halfDigit_2)
+  ,kx_halfDigit_Detect: /[⬒-⬓]$/  // f(cf_halfDigit_0,cf_halfDigit_2)
   ,kx_halfLevel_isValid: true // indica se permitido ou não na precisão.
   ,kx_latLng_ZERO_digits: 6  // f(cf_latLng_ZERO)
   // STATES:  see cleanStates() method.
@@ -27,6 +27,7 @@ var Geocode = {
   // PLUGS:
   ,dggCell: null //  to use props and call methods of an instance of DGGcell
   // minimal DGGcell have .set() and .id.
+  ,cover_rgxMcl:null
 
   // METHODS: set, setWithoutLevel, cloneState, etc.
 }; // \obj
@@ -60,7 +61,6 @@ Geocode.set = function(lngLat, level) {
     this.polygon = this.dggCell.polygon; // copy of GeoJSON.
 
   } else if ( !(level % ckb[1]) ) { // UNION OF TWO CELLS:
-    console.log("... cell by union")
     this.center = null;
     this.dggCell.set( lngLat, Math.ceil(level) ); // level L+1
     var len = this.dggCell.id.length; // number of base4 digits
@@ -297,6 +297,24 @@ Geocode.hlp_base4_to_outBase = function(x) {
         .padStart(outBase_len,'0');
 };
 
+Geocode.hlp_base4h_to_outBase = function(xB4h,xB4h_level) {
+  var good=String(xB4h).trim().match(/^([0-3]+)([⬒-⬓])?$/u); // utf8 must be a range.
+	if (!good)
+    throw new Error('ER16: Base4h MUST be string and non-empty');
+	var lastHalfDigit = good[2]? good[2]: '';
+	var lastBit=''; // will be '', '0' or '1'.
+  if (lastHalfDigit) lastBit = (lastBit=='⬒')? '0': '1';
+	var xB4 = good[1];
+  if (lastHalfDigit) {
+    var x_bin =  bigInt(xB4,4,'0123').toString(2)+lastBit;
+    return bigInt(x_bin,2).toString(this.kx_hash_base, this.kx_hash_baseAlphabet)
+          .padStart(xB4h_level*0.4,'0');
+  } else
+    return bigInt(xB4,4,'0123',true)
+          .toString(this.kx_hash_base, this.kx_hash_baseAlphabet)
+          .padStart(xB4h_level*0.4,'0'); // usar kx* para 2/5, etc.
+};
+
 Geocode.hlp_base4_to_b4half = function(x) {
   // lost the last bit changing base4Digit to halfDigit.
   x = String(x).replace(/[01]$/,this.cf_halfDigit_0).replace(/[23]$/,this.cf_halfDigit_2);
@@ -375,6 +393,56 @@ Geocode.hlp_int_to_base4 = function (x,len) {
   else if (typeof x != 'object') //  bigInt object
     throw new Error('ER20: expecting bigint or int parameter of int_to_base4, but supplied '+(typeof x));
   return x.toString(4).padStart(len,'0');
+}; // \func
+
+///
+
+/**
+ * Converts base4h (with halfBigit) to binary, returning information about original level.
+ */
+Geocode.hlp_base4h_to_bin = function (xB4h) {
+  // future kx_regex must use kx_halfDigit_Detect
+	var good=xB4h.match(/^([0-3]+)([⬒-⬓])?$/u); // utf8 must be a range.
+	if (!good)
+		return null;
+	var lastHalfDigit = good[2]? good[2]: '';
+	var lastBit=''; // will be '', '0' or '1'.
+  if (lastHalfDigit) lastBit = (lastBit=='⬒')? '0': '1';
+	var xB4 = good[1];
+	var b4_len = xB4.length;
+	var b2_len = b4_len*2 + ((lastBit==='')?0:1);
+	var xB2 = (bigInt(xB4,4).toString(2) + lastBit).padStart(b2_len,'0');
+	return { b2:xB2, level:b4_len+lastHalfDigit?0.5:0 }
+}; // \func
+
+/**
+ * Cut head (prefix) of x in binary string and returns tail as base4j string.
+ * @param p string base4h input prefix
+ * @param x string base4h main input
+ * @return array [base4h tail, float level]
+ */
+Geocode.hlp_base4h_cutPrefix = function (p,x) {
+	p = this.hlp_base4h_to_bin(p);
+	x = this.hlp_base4h_to_bin(x);
+	if (!p || !x) return null; // error, bad number
+	if (p.level>x.level) return null; // error, impossible p to be a root
+	var x_root = x.b2.slice(0,p.b2.length);
+	if (x_root!=p.b2) return null; //error not same root
+	var resB2_len = x.b2.length - p.b2.length; // se nao for divisivel por 2 nao pode ser base4, guardar o ultimo bit!
+	var res = x.b2.slice(p.b2.length);
+	if (resB2_len!=res.length) console.log("bug5")
+	var resB4h_len = resB2_len/2.0;
+  //console.log("res1=",res)
+	if (Number.isInteger(resB4h_len))
+		return [bigInt(res,2).toString(4).padStart(resB4h_len,'0'),resB4h_len];
+	else {
+		var btoh = {"0":"⬒","1":"⬓"};
+		var bit = res.slice(-1);
+		var res = res.slice(0,-1);
+    //console.log("res2=",res)
+		var len = Math.floor(resB4h_len);
+		return [bigInt(res,2).toString(4).padStart(len,'0') + btoh[bit], resB4h_len];
+	}
 }; // \func
 
 // // /// //

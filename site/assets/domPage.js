@@ -51,6 +51,20 @@ function drawCell(rmLast=true) {
 	drawCell_byPoly(Geocode.polygon, $('#fitZoom').is(':checked'), rmLast); //map.js
 }
 
+function showCut(p,x,dom_id) {
+	//OLD!
+
+	// no futuro buscar a macrocélula adequada a partir dos dados de cobertura.
+	//if (!p) p= '030333⬓'; // kx_interno!  "6g"b32 = "030333"b4
+	var res = Geocode.hlp_base4h_cutPrefix(p,x);
+	if (res) {
+		var g32 = Geocode.hlp_base4h_to_outBase(res[0],res[1]);
+		$(dom_id).text(g32);
+	} else
+		$(dom_id).text("(inválido)");
+}
+
+
 /**
  * Main function to show a cell in the map, by its coordinates.
  * NOTE: get cell's level from interface.
@@ -82,8 +96,18 @@ function setRefPoint(lat, lon) {
 			$('#dom_base4').text(Geocode.hash_base4h);
 		$('#dom_geocode').val(showHash);
 		$('#dom_geocode_digits').html(Geocode.hash.length);
-
+		if (COVER.cover_rgxMcl && (t = Geocode.hash_base4h.match(COVER.cover_rgxMcl))) {
+			//console.log("t=",t," of ",COVER.IdxOf)
+			if (Geocode.hash_base4h<15) $('#cell_etc').text('(inválido)')
+			else {
+				var hash = COVER.name+'-'+COVER.IdxOf[t[1]]+Geocode.hlp_base4h_to_outBase(t[2],t[2].length);
+				$('#cell_etc').text(hash);
+			}
+		} else
+			$('#cell_etc').text('');
 		mapCanvas_popup(Geocode.center, showHash);
+		var tmp = $('#dom_notes').val();
+		$('#dom_notes').val(tmp+', '+Geocode.hash);
 		return Geocode.hash;
 	} else return null;
 } // \func
@@ -115,6 +139,8 @@ function getFromUrl() {  // parse URL, get parameters
 		ret = {geocode:m[1],city:m[2]};
 	else if ( m = UrlRequest.match(/^#([A-Z][a-z0-9A-Z\-\.\+ ]+)[\/\-:;]+([a-z0-9]+)$/) )
 		ret = {geocode:m[2],city:m[1]};
+	else if ( m = UrlRequest.match(/^#([a-z0-9\+ ]+)$/) )
+		ret = {geocode:m[1]};
 	return ret;
 } // \func
 
@@ -136,6 +162,8 @@ function runRequest() {
 		}
 		if (r.city) {
 			console.log("debug1 city ok:",r)
+			var city = r.city.replace(/^BR\-/i,'').toLowerCase();
+			cityCanvas.show(city);  //,dom_id_ref,dom_class_selected)
 			used=true;
 		}
 		if (!used)

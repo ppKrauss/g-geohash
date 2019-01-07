@@ -61,6 +61,25 @@ var cityCanvas = {
           mapCanvas.fitBounds( cityCanvas.geom.getBounds(), {padding:[70,70], animate:true, duration:1.8} );
       });
       if (dom_id_ref!==undefined) {
+
+        // // // // //
+        // // COVER!
+        COVER.name=opt.toUpperCase();
+        var base='32'; //  defaul in the textarea.
+        var cover = $('#city-PTS-'+opt+" textarea").val().trim().split(/\s*,\s*/);
+        if (cover[0].charAt(0)==':') base = cover.shift().slice(1);
+        if (base=='b32') cover = cover.map(
+            x => Geocode.hlp_outBase_to_base4h(x)
+          );
+        COVER.IdxOf = {};
+        for(var i=0;i<cover.length;i++)  {
+          for ( var j of Geocode.base4h_halfDigitSplit(cover[i]) ) // gambi? relembrar
+            COVER.IdxOf[j]=i;
+        }
+        var rgxOr = cover.map(x=>x.replace('⬒','[01]').replace('⬓','[23]')).join('|');
+        COVER.cover_rgxMcl = new RegExp('^(' +rgxOr+ ')(.+)$')
+
+        // // // // //
         // DOM changes, mark city name as selected
         var ref_all = dom_id_ref+'-ALL';
         var ref_this = dom_id_ref+'-'+opt;
