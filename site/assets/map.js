@@ -42,7 +42,7 @@ mapCanvas.on('zoomend', function() {
 
 var cityCanvas = {
   urlCities: "https://raw.githubusercontent.com/datasets-br/city-codes/master/data/dump_osm/",
-  opts: {'sp-spa':"SP/SaoPaulo", 'pr-cur': "PR/Curitiba"},
+  opts: {'sp-spa':"SP/SaoPaulo", 'pr-cur': "PR/Curitiba", 'pa-atm': "PA/Altamira"},
   geom: null,
   geom_opts: {style:{fill:false,color:'red'}},
   show: function (opt,dom_id_ref,dom_class_selected) {

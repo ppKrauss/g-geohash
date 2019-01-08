@@ -80,6 +80,10 @@ $(document).ready(function() {  //  ONLOAD
 			);
 		});
 
+		$('#cover_view').change( function() {
+			if ( $(this).is(':checked') ) {alert("Em construção:\nlembrar de fazer ou pedir para fazer");}
+		});
+
 		runRequest() // checks URL and run parsed parameters.
 
 }); //ONLOAD
@@ -158,30 +162,61 @@ $(document).ready(function() {  //  ONLOAD
 	<div id="city-ALL">
 <!-- ["6gwx","6gwz","6gy8","6gy9","6gyb","6gyc","6gyd","6gyf","6gyg","6gz1","6gz4"] -->
 		<p class="city-LST">Cidade com bordas apresentadas em vermelho:
+
 		&nbsp;<a href="javascript:void(0);" onclick="cityCanvas.show('sp-spa','city')" id="city-sp-spa">São Paulo (SP)</a>,
 		<!-- mostrar amarelo claro ... Cover-set Geohash de "sp-spa"  = ['6gwx','6gwz', '6gy8','6gy9','6gyb','6gyc','6gyd','6gyf','6gyg',  '6gz1','6gz4'] -->
-		&nbsp;<a href="javascript:void(0);" onclick="cityCanvas.show('pr-cur','city')" id="city-pr-cur">Curitiba (PR)</a>.
+		&nbsp;<a href="javascript:void(0);" onclick="cityCanvas.show('pr-cur','city')" id="city-pr-cur">Curitiba (PR)</a>,
+		&nbsp;<a href="javascript:void(0);" onclick="cityCanvas.show('pa-atm','city')" id="city-pa-atm">Altamira (PA)</a>.<!-- IBGE 1500602 -->
 		<br/>
 
 		</p>
 		<p class="city-PTS">Pontos de controle na cidade selecionada: <span>(clique em cidade)</span>
+
 			<span id="city-PTS-sp-spa" style="display:none">
 		   <a href="javascript:void(0);" onclick="setRefPoint(-23.561618,-46.655996);">MASP</a>,
 		   <a href="javascript:void(0);" onclick="setRefPoint(-23.550375,-46.633937);">Marco-zero-SP</a>, ...
 			 <br/>Cobertura:
-			 <textarea rows="2" cols="64">:b32,6gwx,6gwz,6gy8,6gy9,6gyb,6gyc,6gyd,6gyf,6gyg,6gz1,6gz4</textarea>
+			 <textarea rows="2" cols="64">:b4,030333303320,03033321331⬒, 03033330220⬒, 03033330221⬒, 03033330230⬒, 03033330231⬒, 03033330320⬒, 03033330321⬒,
+03033321331⬓, 03033330220⬓, 03033330221⬓, 03033330230⬓, 03033330231⬓, 03033330320⬓,
+03033330233⬒, 03033330322⬒,
+03033330322⬓, 03033330233⬓,
+03033332100⬒, 03033332011⬒,
+03033330303⬓, 03033330321⬒, 03033330321⬓, 03033330323⬒,
+0303332131233⬓,03033321313⬓, 03033330202⬓, 03033330203⬓, 03033330212⬓, 03033330213⬓
+</textarea><label title="Visualizar a cobertura no mapa, em amarelo"><input class="cover_view" type="checkbox"/> visualizar</label>
+<!-- old 				 :b32,6gwx,6gwz,6gy8,6gy9,6gyb,6gyc,6gyd,6gyf,6gyg,6gz1,6gz4 -->
 		  </span>
+
+
 			<span id="city-PTS-pr-cur" style="display:none">
 		   <a href="javascript:void(0);" onclick="setRefPoint(-25.48656,-49.2744);">ponto-lixo1</a>,
 		   <a href="javascript:void(0);" onclick="setRefPoint(-25.63145,-49.3595);">ponto-lixo2</a>, ...
 			 <br/>Cobertura:
-			 <textarea rows="2" cols="64">:b32,6gkzv, 6gkzy, 6gkzz, 6gmp8, 6gkzx, 6gkzw, 6gkzt, 6gkzs, 6gkzk, 6gkzm, 6gkzq, 6gkzr, 6gmp2, 6gmp0, 6gkzp, 6gkzn, 6gkzj, 6gkzh, 6gkyu, 6gkyv, 6gkyy, 6gkyz, 6gmn, 6gkyx, 6gkyw, 6gkyt, 6gkyk, 6gkym, 6gkyq, 6gkyr, 6gkyh, 6gkyj</textarea>
+			 <textarea rows="2" cols="64">:b32,6gkzv, 6gkzy, 6gkzz, 6gmp8, 6gkzx, 6gkzw, 6gkzt, 6gkzs, 6gkzk, 6gkzm, 6gkzq, 6gkzr, 6gmp2, 6gmp0, 6gkzp, 6gkzn, 6gkzj, 6gkzh, 6gkyu, 6gkyv, 6gkyy, 6gkyz, 6gmn, 6gkyx, 6gkyw, 6gkyt, 6gkyk, 6gkym, 6gkyq, 6gkyr, 6gkyh, 6gkyj
+			 </textarea><label title="Visualizar a cobertura no mapa, em amarelo"><input class="cover_view" type="checkbox"/> visualizar</label>
 		  </span>
+
+			<span id="city-PTS-pa-atm" style="display:none">
+		   <a href="javascript:void(0);" onclick="setRefPoint(-25.48656,-49.2744);">ponto-lixo1</a>,
+		   <a href="javascript:void(0);" onclick="setRefPoint(-25.63145,-49.3595);">ponto-lixo2</a>, ...
+			 <br/>Cobertura:
+			 <textarea rows="2" cols="64">
+:b4,031330301⬒, 031330301⬓, 031330303⬒, 031330303⬓, 031330312⬓, 031330330⬒, 031330312⬒, 031330313⬒, 031330313⬓,
+0313203⬒, 0313201⬓, 0313201⬒, 0313210⬒, 0313210⬓,
+0313212⬒, 0313213⬒, 0313211⬓, 0313211⬒, 0313300⬒,
+0313300⬓, 0313302⬒,03133023⬒
+			 </textarea><label title="Visualizar a cobertura no mapa, em amarelo"><input class="cover_view" type="checkbox"/> visualizar</label>
+		  </span>
+
+
 		</p>
 </div>
 <p>Bloco de notas:<br/>
 <textarea id="dom_notes" rows="3" cols="64">
 </textarea>
+<br/><label title="copiar os geocódigos que clicar no mapa">
+	<input type="checkbox" id="dom_notes_chk"/> copiar geocódigos clicados
+</label>
 </p>
 
 </body>

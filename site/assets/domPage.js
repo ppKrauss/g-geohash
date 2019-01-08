@@ -106,8 +106,11 @@ function setRefPoint(lat, lon) {
 		} else
 			$('#cell_etc').text('');
 		mapCanvas_popup(Geocode.center, showHash);
-		var tmp = $('#dom_notes').val();
-		$('#dom_notes').val(tmp+', '+Geocode.hash);
+		if ($('#dom_notes_chk').is(':checked')) {
+			var aux = (Geocode.kx_hash_base==4)? Geocode.hash_base4h: Geocode.hash;
+			var tmp = $('#dom_notes').val();
+			$('#dom_notes').val(tmp +', '+ aux);
+		}
 		return Geocode.hash;
 	} else return null;
 } // \func
