@@ -71,6 +71,7 @@ var cityCanvas = {
         if (base=='b32') cover = cover.map(
             x => Geocode.hlp_outBase_to_base4h(x)
           );
+        COVER.n = cover.length;
         COVER.IdxOf = {};
         for(var i=0;i<cover.length;i++)  {
           for ( var j of Geocode.base4h_halfDigitSplit(cover[i]) ) // gambi? relembrar
@@ -88,8 +89,10 @@ var cityCanvas = {
         $("#"+ref_all+" p.city-LST a").toggleClass(ref_class,false); // unselect all
         $("#"+ref_this).toggleClass(ref_class,true); // select item
 
-        $("#"+ref_all+" p.city-PTS span").hide();
+        $("#"+ref_all+" p.city-PTS span.city-PTS-content").hide();
         $("#city-PTS-"+opt).show();
+        $('#city-PTS-'+opt+' span.coverNumItems').text(COVER.n);
+
       } // \if DOM
       return true;
     } // \if opt
@@ -127,10 +130,8 @@ var cell_geom=null; // used by drawCell_*.
  * @param geom_opts object, leaflet .
  */
 function drawCell_byPoly(GeoJSON_polygon, fit, rmLast=true, conf=null) {
-  console.log("drawCell_byPoly com rmLast=",rmLast)
   if (cell_geom && (rmLast || rmLast===undefined)) {
     cell_geom.remove();
-console.log("rmd!")
   }
   if (!conf) conf={poly:null,fit:null};
   if (!conf.poly) conf.poly={color: 'blue', weight: 2};

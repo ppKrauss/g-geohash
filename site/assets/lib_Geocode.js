@@ -1,6 +1,7 @@
 /**
  * Geocode class, a middleware between geocode generation and DGG cell algorithm.
- * See also: libDgg_*.js of DGG names (Geohash, S2geometry, etc.).
+ * @see libDgg_*.js of DGG names (Geohash, S2geometry, etc.).
+ * @see https://doi.org/10.5281/zenodo.2529918
  */
 'use strict';
 

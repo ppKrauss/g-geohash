@@ -47,6 +47,8 @@ function dom_setLevel(x) {
 	}
 }
 
+
+
 function drawCell(rmLast=true) {
 	var CHK_NOTES = $('#dom_notes_chk').is(':checked');
 	rmLast = !CHK_NOTES; // novo!
@@ -103,7 +105,10 @@ function setRefPoint(lat, lon) {
 			//console.log("t=",t," of ",COVER.IdxOf)
 			if (Geocode.hash_base4h<15) $('#cell_etc').text('(inválido)')
 			else {
-				var hash = COVER.name+'-'+COVER.IdxOf[t[1]]+Geocode.hlp_base4h_to_outBase(t[2],t[2].length);
+				var hash = 'BR-'+COVER.name+'-'+Geocode.hashRender(
+					Geocode.hlp_int_to_outBase(COVER.IdxOf[t[1]],false)
+					+ Geocode.hlp_base4h_to_outBase(t[2],t[2].length)
+				);
 				$('#cell_etc').text(hash);
 			}
 		} else
