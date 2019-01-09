@@ -48,6 +48,8 @@ function dom_setLevel(x) {
 }
 
 function drawCell(rmLast=true) {
+	var CHK_NOTES = $('#dom_notes_chk').is(':checked');
+	rmLast = !CHK_NOTES; // novo!
 	drawCell_byPoly(Geocode.polygon, $('#fitZoom').is(':checked'), rmLast); //map.js
 }
 
@@ -85,6 +87,7 @@ function setRefPoint(lat, lon) {
 	//if (!lev)
 	var lev = dom_getLevel();
 	if (ll && lev) {
+		var CHK_NOTES = $('#dom_notes_chk').is(':checked');
 		Geocode.set(ll, lev);
 		dom_setLatLon(ll, true);
 		drawCell();
@@ -105,8 +108,8 @@ function setRefPoint(lat, lon) {
 			}
 		} else
 			$('#cell_etc').text('');
-		mapCanvas_popup(Geocode.center, showHash);
-		if ($('#dom_notes_chk').is(':checked')) {
+		mapCanvas_popup(Geocode.center, showHash); // rmLast as CHK_NOTES?
+		if (CHK_NOTES) {
 			var aux = (Geocode.kx_hash_base==4)? Geocode.hash_base4h: Geocode.hash;
 			var tmp = $('#dom_notes').val();
 			$('#dom_notes').val(tmp +', '+ aux);

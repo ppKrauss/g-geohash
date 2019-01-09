@@ -127,7 +127,11 @@ var cell_geom=null; // used by drawCell_*.
  * @param geom_opts object, leaflet .
  */
 function drawCell_byPoly(GeoJSON_polygon, fit, rmLast=true, conf=null) {
-  if (cell_geom && (rmLast || rmLast===undefined)) cell_geom.remove();
+  console.log("drawCell_byPoly com rmLast=",rmLast)
+  if (cell_geom && (rmLast || rmLast===undefined)) {
+    cell_geom.remove();
+console.log("rmd!")
+  }
   if (!conf) conf={poly:null,fit:null};
   if (!conf.poly) conf.poly={color: 'blue', weight: 2};
   if (!conf.fit) conf.fit={padding:[70,70], animate:true, duration:1.2};

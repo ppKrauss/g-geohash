@@ -312,7 +312,8 @@ $(document).ready(function() {  //  ONLOAD
 
 			<span id="city-PTS-sp-spa" style="display:none">
 		   <a href="javascript:void(0);" onclick="setRefPoint(-23.561618,-46.655996);">MASP</a>,
-		   <a href="javascript:void(0);" onclick="setRefPoint(-23.550375,-46.633937);">Marco-zero-SP</a>, ...
+		   <a href="javascript:void(0);" onclick="setRefPoint(-23.550375,-46.633937);">Marco-zero-SP</a>,
+			 <a href="javascript:void(0);" onclick="setRefPoint(-23.625486,-46.660856);">Aeroporto</a>, ...
 			 <br/>Cobertura:
 			 <textarea rows="2" cols="64">:b4,030333303320,03033321331⬒, 03033330220⬒, 03033330221⬒, 03033330230⬒, 03033330231⬒, 03033330320⬒, 03033330321⬒,
 03033321331⬓, 03033330220⬓, 03033330221⬓, 03033330230⬓, 03033330231⬓, 03033330320⬓,
@@ -327,19 +328,20 @@ $(document).ready(function() {  //  ONLOAD
 
 
 			<span id="city-PTS-pr-cur" style="display:none">
-		   <a href="javascript:void(0);" onclick="setRefPoint(-25.48656,-49.2744);">ponto-lixo1</a>,
-		   <a href="javascript:void(0);" onclick="setRefPoint(-25.63145,-49.3595);">ponto-lixo2</a>, ...
+		   <a href="javascript:void(0);" onclick="setRefPoint(-25.416667,-49.25);">Centro</a>,
+		   <a href="javascript:void(0);" onclick="setRefPoint(-25.404903,-49.230165);">Aeroporto</a>, ...
 			 <br/>Cobertura:
 			 <textarea rows="2" cols="64">:b32,6gkzv, 6gkzy, 6gkzz, 6gmp8, 6gkzx, 6gkzw, 6gkzt, 6gkzs, 6gkzk, 6gkzm, 6gkzq, 6gkzr, 6gmp2, 6gmp0, 6gkzp, 6gkzn, 6gkzj, 6gkzh, 6gkyu, 6gkyv, 6gkyy, 6gkyz, 6gmn, 6gkyx, 6gkyw, 6gkyt, 6gkyk, 6gkym, 6gkyq, 6gkyr, 6gkyh, 6gkyj
 			 </textarea><label title="Visualizar a cobertura no mapa, em amarelo"><input class="cover_view" type="checkbox"/> visualizar</label>
 		  </span>
 
 			<span id="city-PTS-pa-atm" style="display:none">
-		   <a href="javascript:void(0);" onclick="setRefPoint(-25.48656,-49.2744);">ponto-lixo1</a>,
-		   <a href="javascript:void(0);" onclick="setRefPoint(-25.63145,-49.3595);">ponto-lixo2</a>, ...
+		   <a href="javascript:void(0);" onclick="setRefPoint(-3.2069074,-52.2188004);">Prefeitura</a>,
+		   <a href="javascript:void(0);" onclick="setRefPoint(-3.2535258,-52.249368);">Aeroporto</a>, ...
 			 <br/>Cobertura:
-			 <textarea rows="2" cols="64">
-:b4,031330301⬒, 031330301⬓, 031330303⬒, 031330303⬓, 031330312⬓, 031330330⬒, 031330312⬒, 031330313⬒, 031330313⬓,
+			 <textarea rows="2" cols="64">:b4,031330312313220, 031330312303311, 03133031231212, 03133031231203, 03133031231231,
+03133031231230,03133031231232,03133031231322,03133031231233,03133031231323,
+031330301⬒, 031330301⬓, 031330303⬒, 031330303⬓, 031330312⬓, 031330330⬒, 031330312⬒, 031330313⬒, 031330313⬓,
 0313203⬒, 0313201⬓, 0313201⬒, 0313210⬒, 0313210⬓,
 0313212⬒, 0313213⬒, 0313211⬓, 0313211⬒, 0313300⬒,
 0313300⬓, 0313302⬒,03133023⬒
