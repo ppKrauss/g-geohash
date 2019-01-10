@@ -120,8 +120,8 @@ else
 	$xx=($CUR_ITEM['baseBits']<4)? 2 : 5;
 
 if ($CUR_ITEM['lib']=='Geohash') $scale = [
-		'4.0'=>'1100km','5.0'=>'800km','6.0'=>'600km','7.5'=>'150km',
-		'10.0'=>'30km','15.0'=>'1km','16.0'=>'500m',
+		'4.0'=>'1100km','5.0'=>'850km','6.0'=>'600km','7.5'=>'150km',
+		'10.0'=>'30km','12.5'=>'5km','15.0'=>'1km','16.0'=>'500m','17.5'=>'150m',
 		'20.0'=>'25m','22.0'=>'10m','22.5'=>'5m', '25.0'=>'1m'
 	];
 else $scale = [];
@@ -163,6 +163,7 @@ $TPL = <<<HTML
 	/>
 	<style>
 		p, fieldset {margin-left: 10pt;}
+		fieldset {line-height: 22pt;}
 		.selected_text {font-weight: bold;}
 		.city-PTS span {margin:0;padding:0;}
 		#cell_etc {color:red;font-size:120%; font-weight:bold;}
@@ -283,14 +284,15 @@ $(document).ready(function() {  //  ONLOAD
 		  (<span id="dom_geocode_digits" style="font-family:monospace;color:#008">0</span><small> dígitos</small>) &nbsp;&nbsp;&nbsp;
 		<label style="white-space:nowrap">Separadores <input type="checkbox" checked="1" id="code_sep"/></label>
 		&nbsp;&nbsp;&nbsp;
-		<label style="white-space:nowrap">Nível hierárquico:
+		<label title="Nível na hierárquia de grade/subgrade das células" style="white-space:nowrap">Nível hierárquico:
 			<select id="dom_level" class="latlon" style="font-weight: bold; color:#008; font-size:135%;">
 			{$OPTS_LEVEL}
 			</select></label>
+			&nbsp;&nbsp;<small title="diâmetro e lado de um circulo e de um quadrado de mesma área" id="dom_medidas"></small>
 		<br/>
-		<code id="cell_etc"></code>&nbsp;&nbsp;&nbsp;
+		<code title="Código que substituiria o CEP, ou PlusCode contextualizado por nome de cidade" id="cell_etc"></code>&nbsp;&nbsp;&nbsp;
 		<label>Centro em <span style="white-space:nowrap; font-family:monospace">geo:<input
-			type="text" title="Latitude (°N/S), Longitude (°L/O)"
+			type="text" title="Latitude (°N/S) e Longitude (°L/O), conforme padrão RFC 5870"
 			id="dom_latlon" size="22" maxlength="26" class="latlon" placeholder="GeoURI"/></span>
 		</label>
 		&nbsp;&nbsp;&nbsp;
@@ -311,7 +313,9 @@ $(document).ready(function() {  //  ONLOAD
 		<br/>
 
 		</p>
-		<p class="city-PTS">Pontos de controle na cidade selecionada: <span>(clique em cidade)</span>
+		<p>Dimensões do município selecionado: <span id="city-MEDIDAS"></span>
+		</p>
+		<p class="city-PTS">Pontos de controle: <span>(clique em cidade)</span>
 
 			<span id="city-PTS-sp-spa" class="city-PTS-content" style="display:none">
 		   <a href="javascript:void(0);" onclick="setRefPoint(-23.561618,-46.655996);">MASP</a>,

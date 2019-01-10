@@ -13,6 +13,7 @@
 	/>
 	<style>
 		p, fieldset {margin-left: 10pt;}
+		fieldset {line-height: 22pt;}
 		.selected_text {font-weight: bold;}
 		.city-PTS span {margin:0;padding:0;}
 		#cell_etc {color:red;font-size:120%; font-weight:bold;}
@@ -144,7 +145,7 @@ $(document).ready(function() {  //  ONLOAD
 		  (<span id="dom_geocode_digits" style="font-family:monospace;color:#008">0</span><small> dígitos</small>) &nbsp;&nbsp;&nbsp;
 		<label style="white-space:nowrap">Separadores <input type="checkbox" checked="1" id="code_sep"/></label>
 		&nbsp;&nbsp;&nbsp;
-		<label style="white-space:nowrap">Nível hierárquico:
+		<label title="Nível na hierárquia de grade/subgrade das células" style="white-space:nowrap">Nível hierárquico:
 			<select id="dom_level" class="latlon" style="font-weight: bold; color:#008; font-size:135%;">
 			
 	<option value='2'>L2</option>
@@ -153,7 +154,7 @@ $(document).ready(function() {  //  ONLOAD
 	<option value='3.5'>L3½</option>
 	<option value='4'>L4 &nbsp;&nbsp; (~1100km)</option>
 	<option value='4.5'>L4½</option>
-	<option value='5'>L5 &nbsp;&nbsp; (~800km)</option>
+	<option value='5'>L5 &nbsp;&nbsp; (~850km)</option>
 	<option value='5.5'>L5½</option>
 	<option value='6'>L6 &nbsp;&nbsp; (~600km)</option>
 	<option value='6.5'>L6½</option>
@@ -168,7 +169,7 @@ $(document).ready(function() {  //  ONLOAD
 	<option value='11'>L11</option>
 	<option value='11.5'>L11½</option>
 	<option value='12'>L12</option>
-	<option value='12.5'>L12½</option>
+	<option value='12.5'>L12½ &nbsp;&nbsp; (~5km)</option>
 	<option value='13'>L13</option>
 	<option value='13.5'>L13½</option>
 	<option value='14'>L14</option>
@@ -178,7 +179,7 @@ $(document).ready(function() {  //  ONLOAD
 	<option value='16'>L16 &nbsp;&nbsp; (~500m)</option>
 	<option value='16.5'>L16½</option>
 	<option value='17'>L17</option>
-	<option value='17.5'>L17½</option>
+	<option value='17.5'>L17½ &nbsp;&nbsp; (~150m)</option>
 	<option value='18' selected>L18</option>
 	<option value='18.5'>L18½</option>
 	<option value='19'>L19</option>
@@ -193,10 +194,11 @@ $(document).ready(function() {  //  ONLOAD
 	<option value='23.5'>L23½</option>
 	<option value='24'>L24</option>
 			</select></label>
+			&nbsp;&nbsp;<small title="diâmetro e lado de um circulo e de um quadrado de mesma área" id="dom_medidas"></small>
 		<br/>
-		<code id="cell_etc"></code>&nbsp;&nbsp;&nbsp;
+		<code title="Código que substituiria o CEP, ou PlusCode contextualizado por nome de cidade" id="cell_etc"></code>&nbsp;&nbsp;&nbsp;
 		<label>Centro em <span style="white-space:nowrap; font-family:monospace">geo:<input
-			type="text" title="Latitude (°N/S), Longitude (°L/O)"
+			type="text" title="Latitude (°N/S) e Longitude (°L/O), conforme padrão RFC 5870"
 			id="dom_latlon" size="22" maxlength="26" class="latlon" placeholder="GeoURI"/></span>
 		</label>
 		&nbsp;&nbsp;&nbsp;
@@ -217,7 +219,9 @@ $(document).ready(function() {  //  ONLOAD
 		<br/>
 
 		</p>
-		<p class="city-PTS">Pontos de controle na cidade selecionada: <span>(clique em cidade)</span>
+		<p>Dimensões do município selecionado: <span id="city-MEDIDAS"></span>
+		</p>
+		<p class="city-PTS">Pontos de controle: <span>(clique em cidade)</span>
 
 			<span id="city-PTS-sp-spa" class="city-PTS-content" style="display:none">
 		   <a href="javascript:void(0);" onclick="setRefPoint(-23.561618,-46.655996);">MASP</a>,

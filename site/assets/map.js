@@ -58,6 +58,10 @@ var cityCanvas = {
           error: function(xhr) { alert(xhr.statusText); }
       });
       $.when(jcity).done(function() { // Add requested external GeoJSON to map
+          var area   = turf.area(jcity.responseJSON)/1000000.0;  // in km²
+          COVER.m_diam = Math.round( Math.sqrt((4.0*area)/Math.PI) ); // A=π*r²=π*diam²/4
+          COVER.m_side = Math.round( Math.sqrt(area) ); // A=L²
+          COVER.m_area = Math.round(area);
           cityCanvas.geom = L.geoJSON( jcity.responseJSON, cityCanvas.geom_opts ).addTo(mapCanvas);
           mapCanvas.fitBounds( cityCanvas.geom.getBounds(), {padding:[70,70], animate:true, duration:1.8} );
       });
@@ -83,6 +87,10 @@ var cityCanvas = {
 
         // // // // //
         // DOM changes, mark city name as selected
+        var medias = 'area='+COVER.m_area+' km²; diam='
+  			    +COVER.m_diam+", lado="+COVER.m_side
+  			$('#city-MEDIDAS').html(medias)
+
         var ref_all = dom_id_ref+'-ALL';
         var ref_this = dom_id_ref+'-'+opt;
         var ref_class = (dom_class_selected!==undefined)? dom_class_selected: 'selected_text';

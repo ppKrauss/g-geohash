@@ -13,6 +13,7 @@
 	/>
 	<style>
 		p, fieldset {margin-left: 10pt;}
+		fieldset {line-height: 22pt;}
 		.selected_text {font-weight: bold;}
 		.city-PTS span {margin:0;padding:0;}
 		#cell_etc {color:red;font-size:120%; font-weight:bold;}
@@ -140,23 +141,24 @@ $(document).ready(function() {  //  ONLOAD
 		  (<span id="dom_geocode_digits" style="font-family:monospace;color:#008">0</span><small> dígitos</small>) &nbsp;&nbsp;&nbsp;
 		<label style="white-space:nowrap">Separadores <input type="checkbox" checked="1" id="code_sep"/></label>
 		&nbsp;&nbsp;&nbsp;
-		<label style="white-space:nowrap">Nível hierárquico:
+		<label title="Nível na hierárquia de grade/subgrade das células" style="white-space:nowrap">Nível hierárquico:
 			<select id="dom_level" class="latlon" style="font-weight: bold; color:#008; font-size:135%;">
 			
-	<option value='5'>L5 &nbsp;&nbsp; (~800km)</option>
+	<option value='5'>L5 &nbsp;&nbsp; (~850km)</option>
 	<option value='7.5'>L7½ &nbsp;&nbsp; (~150km)</option>
 	<option value='10'>L10 &nbsp;&nbsp; (~30km)</option>
-	<option value='12.5'>L12½</option>
+	<option value='12.5'>L12½ &nbsp;&nbsp; (~5km)</option>
 	<option value='15'>L15 &nbsp;&nbsp; (~1km)</option>
-	<option value='17.5'>L17½</option>
+	<option value='17.5'>L17½ &nbsp;&nbsp; (~150m)</option>
 	<option value='20' selected>L20 &nbsp;&nbsp; (~25m)</option>
 	<option value='22.5'>L22½ &nbsp;&nbsp; (~5m)</option>
 	<option value='25'>L25 &nbsp;&nbsp; (~1m)</option>
 			</select></label>
+			&nbsp;&nbsp;<small title="diâmetro e lado de um circulo e de um quadrado de mesma área" id="dom_medidas"></small>
 		<br/>
-		<code id="cell_etc"></code>&nbsp;&nbsp;&nbsp;
+		<code title="Código que substituiria o CEP, ou PlusCode contextualizado por nome de cidade" id="cell_etc"></code>&nbsp;&nbsp;&nbsp;
 		<label>Centro em <span style="white-space:nowrap; font-family:monospace">geo:<input
-			type="text" title="Latitude (°N/S), Longitude (°L/O)"
+			type="text" title="Latitude (°N/S) e Longitude (°L/O), conforme padrão RFC 5870"
 			id="dom_latlon" size="22" maxlength="26" class="latlon" placeholder="GeoURI"/></span>
 		</label>
 		&nbsp;&nbsp;&nbsp;
@@ -177,7 +179,9 @@ $(document).ready(function() {  //  ONLOAD
 		<br/>
 
 		</p>
-		<p class="city-PTS">Pontos de controle na cidade selecionada: <span>(clique em cidade)</span>
+		<p>Dimensões do município selecionado: <span id="city-MEDIDAS"></span>
+		</p>
+		<p class="city-PTS">Pontos de controle: <span>(clique em cidade)</span>
 
 			<span id="city-PTS-sp-spa" class="city-PTS-content" style="display:none">
 		   <a href="javascript:void(0);" onclick="setRefPoint(-23.561618,-46.655996);">MASP</a>,

@@ -83,6 +83,9 @@ Geocode.set = function(lngLat, level) {
   this.hashRender(null,false);
   if (!this.center)
     this.center = turf.centroid(this.polygon).geometry.coordinates; //lngLat array
+  this.m_area = turf.area(this.polygon);  // in m²
+  this.m_diam  = Math.sqrt((4.0*Geocode.m_area)/Math.PI).toFixed(1); // A=π*r²=π*diam²/4
+  this.m_side = Math.sqrt(Geocode.m_area).toFixed(1); // A=L²
   return this;
 }; // \func
 

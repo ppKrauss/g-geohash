@@ -106,11 +106,11 @@ function setRefPoint(lat, lon) {
 			//console.log("t=",t," of ",COVER.IdxOf)
 			if (Geocode.hash_base4h<15) $('#cell_etc').text('(inválido)')
 			else {
-				var hash = 'BR-'+COVER.name+'-'+Geocode.hashRender(
+				var hash = '<small>BR-'+COVER.name+'-</small>'+Geocode.hashRender(
 					Geocode.hlp_int_to_outBase(COVER.IdxOf[t[1]],false)
 					+ Geocode.hlp_base4h_to_outBase(t[2],t[2].length)
 				);
-				$('#cell_etc').text(hash);
+				$('#cell_etc').html(hash);
 			}
 		} else
 			$('#cell_etc').text('');
@@ -120,6 +120,8 @@ function setRefPoint(lat, lon) {
 			var tmp = $('#dom_notes').val();
 			$('#dom_notes').val(tmp +', '+ aux);
 		}
+		var medidas = 'area='+Geocode.m_area.toFixed(1)+' m²; diam='+Geocode.m_diam+'; lado='+Geocode.m_side;
+		$('#dom_medidas').html(medidas);
 		return Geocode.hash;
 	} else return null;
 } // \func
@@ -180,7 +182,7 @@ function runRequest(reqDefault={geo:"-23.550375,-46.633937",geo_level:20,city:"B
 		if (r.city) {
 			//console.log("debug1 city ok:",r)
 			var city = r.city.replace(/^BR\-/i,'').toLowerCase();
-			cityCanvas.show(city,'city');
+			cityCanvas.show(city,'city'); // !important
 			used=true;
 		}
 		if (c) {
