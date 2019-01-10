@@ -101,7 +101,8 @@ function setRefPoint(lat, lon) {
 			$('#dom_base4').text(Geocode.hash_base4h);
 		$('#dom_geocode').val(showHash);
 		$('#dom_geocode_digits').html(Geocode.hash.length);
-		if (COVER.cover_rgxMcl && (t = Geocode.hash_base4h.match(COVER.cover_rgxMcl))) {
+		if (COVER.cover_rgxMcl && (!Geocode.cf_isoOnlyFor32 ||  Geocode.kx_hash_base==32)
+			&& (t = Geocode.hash_base4h.match(COVER.cover_rgxMcl))) {
 			//console.log("t=",t," of ",COVER.IdxOf)
 			if (Geocode.hash_base4h<15) $('#cell_etc').text('(inválido)')
 			else {
@@ -146,35 +147,46 @@ function getFromUrl() {  // parse URL, get parameters
 	// e.g. #6gzm/sp-mtl , #6gycf/sp-spa or #6gkz/pr-cur
 	if ( m = UrlRequest.match(/^#geo:(\-?\d+\.\d+,\-?\d+\.\d+)$/) )
 		ret = {geo:m[1]};
-  else if ( m = UrlRequest.match(/^#([a-z0-9\+ ]+)[\/\-:;]+(.+)$/) )
+  else if ( m = UrlRequest.match(/^#([a-z0-9\+ ]+)[\/\-:;]+(.+)$/i) )
 		ret = {geocode:m[1],city:m[2]};
 	else if ( m = UrlRequest.match(/^#([A-Z][a-z0-9A-Z\-\.\+ ]+)[\/\-:;]+([a-z0-9]+)$/) )
 		ret = {geocode:m[2],city:m[1]};
-	else if ( m = UrlRequest.match(/^#([a-z0-9\+ ]+)$/) )
+	else if ( m = UrlRequest.match(/^#([a-z0-9\+ ]+)$/i) )
 		ret = {geocode:m[1]};
 	return ret;
 } // \func
 
-function runRequest() {
+function runRequest(reqDefault={geo:"-23.550375,-46.633937",geo_level:20,city:"BR-SP-SPA"}
+) {
 	var c = null,
 	    r = getFromUrl();
+	if (!r) r = reqDefault;
 	if (r) { // check URL params
 		var used=false;
 		if ( r.geocode && (c = Geocode.setByHash_whenIsValid(r.geocode)) ) {
-			$('#dom_geocode').val(c.hash)
-			$('#dom_level').val(c.level)
-			setRefPoint(c.center);
-			used=true;
+			var ckeckCity = {"030333":"sp-spa",  "030332":"pr-cur", "0313":"pa-atm"}; // revisar
+			var ckeckCity_rgx = /^(030333|030332|0313)/; // revisar
+			var ck = c.hash_base4h.match(ckeckCity_rgx);
+			if (ck) r.city=ckeckCity[ck[1]];
+			var hash = c.hash; // $('#dom_geocode').val(c.hash)
+			var level = c.level; // $('#dom_level').val(c.level)
+			c = c.center;
 		} else if (r.geo) {
-			$('#dom_level').val(15); // 1km
-			var c = Geocode.hlp_parseLatLon(r.geo);
-			setRefPoint(c);
+			var level = r.geo_level? r.geo_level: 15;
+			//$('#dom_level').val(level); // 1km
+			c = Geocode.hlp_parseLatLon(r.geo);
+		}
+		//console.log("a",level,c);
+		if (r.city) {
+			//console.log("debug1 city ok:",r)
+			var city = r.city.replace(/^BR\-/i,'').toLowerCase();
+			cityCanvas.show(city,'city');
 			used=true;
 		}
-		if (r.city) {
-			console.log("debug1 city ok:",r)
-			var city = r.city.replace(/^BR\-/i,'').toLowerCase();
-			cityCanvas.show(city);  //,dom_id_ref,dom_class_selected)
+		if (c) {
+			//$('#dom_geocode').val(hash);
+			$('#dom_level').val(level);
+			setRefPoint(c);
 			used=true;
 		}
 		if (!used)

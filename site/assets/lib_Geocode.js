@@ -14,7 +14,7 @@ var Geocode = {
   ,cf_halfDigit_2: '⬓' // down_black=2 or 3
   ,cf_hash_sep: '.' // standard is empty. Usual '.'
   ,cf_digSepRegex: /([^\+\-\.,;]{3})/g  // f(alphabet,cf_hash_sep) usual or any other, for clean hash.
-
+  ,cf_isoOnlyFor32: true
   // CACHED-CONFIGS: obtained by method this.config() constructor
   ,kx_hash_baseAlphabet_case: 'lower'
   ,kx_hash_baseAlphabet: '0123456789bcdefghjkmnpqrstuvwxyz' // f(cf_hash_baseAlphabetLabel)

@@ -53,6 +53,7 @@ var cityCanvas = {
       var jcity = $.ajax({   //  see https://medium.com/d/c72ae3b41c01
           url: cityCanvas.urlCities+fname+".geojson",
           dataType: "json",
+          async: false,  // MAU, usar https://api.jquery.com/jquery.deferred/ com opcao de day.
           success: console.log(fname+" city successfully loaded."),
           error: function(xhr) { alert(xhr.statusText); }
       });
